@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nalon LeadScout</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="page">
+        <section class="hero">
+            <div>
+                <p class="badge">Python Lead Generation Automation</p>
+                <h1>Nalon LeadScout</h1>
+                <p class="subtitle">
+                    Find local businesses with no listed websites using free OpenStreetMap data.
+                    Generate leads, score them, create outreach messages, and download CSV files.
+                </p>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span>Total Leads</span>
+                <strong>{{ stats.total_leads }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Email Ready</span>
+                <strong>{{ stats.email_ready }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>High Quality</span>
+                <strong>{{ stats.high_quality }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>With Phone</span>
+                <strong>{{ stats.with_phone }}</strong>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-heading">
+                <div>
+                    <h2>Find Leads</h2>
+                    <p>Choose a city and category, then generate a fresh lead list.</p>
+                </div>
+            </div>
+
+            <form action="/find" method="post" class="form">
+                <div class="field">
+                    <label for="city">City</label>
+                    <select name="city" id="city" required>
+                        {% for city in cities %}
+                            <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>
+                                {{ city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="category">Business Category</label>
+                    <select name="category" id="category" required>
+                        {% for category in categories %}
+                            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit">Find Leads</button>
+            </form>
+
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+
+            {% if download_ready %}
+                <div class="download-row">
+                    <a href="/download/full" class="download-button">Download Full Leads CSV</a>
+                    <a href="/download/email-ready" class="download-button secondary">Download Email-Ready CSV</a>
+                    <a href="/download/outreach" class="download-button secondary">Download Outreach CSV</a>
+                </div>
+            {% endif %}
+        </section>
+
+        {% if leads %}
+            <section class="card">
+                <div class="section-heading">
+                    <div>
+                        <h2>Lead Results</h2>
+                        <p>Showing the first 100 leads from the latest search.</p>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Business</th>
+                                <th>Category</th>
+                                <th>City</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Quality</th>
+                                <th>Score</th>
+                                <th>Best Channel</th>
+                                <th>Maps</th>
+                                <th>Search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lead in leads %}
+                                <tr>
+                                    <td>{{ lead.business_name }}</td>
+                                    <td>{{ lead.category }}</td>
+                                    <td>{{ lead.city }}</td>
+                                    <td>{{ lead.phone }}</td>
+                                    <td>{{ lead.email }}</td>
+                                    <td>
+                                        <span class="pill {{ lead.lead_quality | lower }}">
+                                            {{ lead.lead_quality }}
+                                        </span>
+                                    </td>
+                                    <td>{{ lead.lead_score }}</td>
+                                    <td>{{ lead.recommended_contact_channel }}</td>
+                                    <td>
+                                        {% if lead.maps_link %}
+                                            <a href="{{ lead.maps_link }}" target="_blank">Open</a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if lead.google_search_link %}
+                                            <a href="{{ lead.google_search_link }}" target="_blank">Check</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+    </div>
+
+</body>
+</html>
