@@ -45,7 +45,7 @@ BUSINESS_CATEGORIES = {
 }
 
 
-OUTPUTS_FOLDER = "outputs"
+OUTPUTS_FOLDER = "/tmp"
 
 FULL_LEADS_FILE = os.path.join(OUTPUTS_FOLDER, "latest_full_leads.csv")
 EMAIL_READY_FILE = os.path.join(OUTPUTS_FOLDER, "latest_email_ready_leads.csv")
